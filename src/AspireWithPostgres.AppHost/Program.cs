@@ -1,6 +1,11 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var apiService = builder.AddProject<Projects.AspireWithPostgres_ApiService>("apiservice");
+var inventoryDatabase = builder.AddPostgres("pgsql")
+                               .PublishAsAzurePostgresFlexibleServer()
+                               .AddDatabase("inventory");
+
+var apiService = builder.AddProject<Projects.AspireWithPostgres_ApiService>("apiservice")
+                        .WithReference(inventoryDatabase);
 
 builder.AddProject<Projects.AspireWithPostgres_Web>("webfrontend")
     .WithExternalHttpEndpoints()
